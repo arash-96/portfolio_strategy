@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Trade Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: grid;
+            grid-template-areas:
+                "header header"
+                "sidebar content"
+                "footer footer";
+            grid-template-columns: 1fr 3fr;
+            grid-template-rows: auto 1fr auto;
+            gap: 10px;
+            height: 100vh;
+        }
+
+        header,
+        footer {
+            grid-area: header;
+            background-color: #f1f1f1;
+            padding: 10px;
+            text-align: center;
+        }
+
+        sidebar {
+            grid-area: sidebar;
+            background-color: #f9f9f9;
+            padding: 10px;
+        }
+
+        content {
+            grid-area: content;
+            padding: 10px;
+        }
+
+        .trade-form {
+            display: grid;
+            gap: 10px;
+        }
+
+        .trade-form input,
+        .trade-form select,
+        .trade-form button,
+        .trade-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+        }
+
+        .trade-blotter {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .trade-blotter th,
+        .trade-blotter td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .trade-blotter th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+
+        <sidebar>
+            <div class="trade-form">
+                <h2>New Trade</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p}}
+                    <button type="submit">Add Trade</button>
+                </form>
+            </div>
+        </sidebar>
+        <content>
+            <h2>Trades by Instrument type</h2>
+            <div id="chart">
+                <!-- <img src="https://via.placeholder.com/1000x200" alt="Chart"> -->
+                <canvas id="myChart" style="width: 200px; height: 50px;"></canvas>
+            </div>
+            <h2>Trade Blotter</h2>
+            <table class="trade-blotter" style="width: 50%;">
+                <thead>
+                    <tr>
+                        <th>Security ID</th>
+                        <th>Instrument type</th>
+                        <th>Trade date</th>
+                        <th>Notional amount</th>
+                        <th>Number of contracts</th>
+                        <th>Price</th>
+                        <th>Username</th>
+                        <th>Comment</th>
+                        <th>Timestamp</th>
+                        <th>Strategy</th>
+                        <th>Strategy ID</th>
+                        <th>Spread</th>
+                        <th>Direction</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for trade in trades %}
+                    <tr>
+                        <td>{{ trade.securityID }}</td>
+                        <td>{{ trade.instrumentType }}</td>
+                        <td>{{ trade.tradeDate }}</td>
+                        <td>{{ trade.notional }}</td>
+                        <td>{{ trade.numberContracts }}</td>
+                        <td>{{ trade.price}}</td>
+                        <td>{{ trade.username}}</td>
+                        <td>{{ trade.comment }}</td>
+                        <td>{{ trade.timeStamp }}</td>
+                        <td>{{ trade.strategy}}</td>
+                        <td>{{ trade.strategyID}}</td>
+                        <td>{{ trade.spread}}</td>
+                        <td>{{ trade.direction}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button>Upload trades</button>
+        </content>
+    </div>
+</body>
+
+</html>
+
+
+
+<script>
+    let replacedCount = '{{counts}}'.replace(/&#x27;/g, "'");
+    let jsonString = replacedCount.replace(/'/g, '"');
+    let obj = JSON.parse(jsonString);
+
+    let keys = Object.keys(obj);
+    let values = Object.values(obj);
+
+    const ctx = document.getElementById('myChart');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: keys,
+            datasets: [{
+                label: 'Dataset Label',
+                data: values,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    ticks: {
+                        stepSize: 1
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
