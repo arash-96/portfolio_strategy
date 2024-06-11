@@ -116,32 +116,34 @@
                 </thead>
                 <tbody>
                     {% for trade in trades %}
-                    <tr>
-                        <td>{{ trade.securityID }}</td>
-                        <td>{{ trade.instrumentType }}</td>
-                        <td>{{ trade.tradeDate }}</td>
-                        <td>{{ trade.notional }}</td>
-                        <td>{{ trade.numberContracts }}</td>
-                        <td>{{ trade.price}}</td>
-                        <td>{{ trade.username}}</td>
-                        <td>{{ trade.comment }}</td>
-                        <td>{{ trade.timeStamp }}</td>
-                        <td>{{ trade.strategy}}</td>
-                        <td>{{ trade.strategyID}}</td>
-                        <td>{{ trade.spread}}</td>
-                        <td>{{ trade.direction}}</td>
+                    <tr id='{{ trade.tradeID }}'>
+                        <td class="editable" data-field="securityID">{{ trade.securityID }}</td>
+                        <td class="editable" data-field="instrumentType">{{ trade.instrumentType }}</td>
+                        <td class="editable" data-field="tradeDate">{{ trade.tradeDate }}</td>
+                        <td class="editable" data-field="notional">{{ trade.notional }}</td>
+                        <td class="editable" data-field="numberContracts">{{ trade.numberContracts }}</td>
+                        <td class="editable" data-field="price">{{ trade.price}}</td>
+                        <td class="editable" data-field="username">{{ trade.username}}</td>
+                        <td class="editable" data-field="comment">{{ trade.comment }}</td>
+                        <td class="editable" data-field="strategy">{{ trade.strategy}}</td>
+                        <td class="editable" data-field="strategyID">{{ trade.strategyID}}</td>
+                        <td class="editable" data-field="spread">{{ trade.spread}}</td>
+                        <td class="editable" data-field="direction">{{ trade.direction}}</td>
+                        <td>
+                            <button type="button" onclick="enableEditing('{{ trade.tradeID }}')">Edit</button>
+                            <button type="button" class="save-button"
+                                onclick="saveRow('{{ trade.tradeID }}')">Save</button>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            <button>Upload trades</button>
+            <!-- <button>Upload trades</button> -->
         </content>
     </div>
 </body>
 
 </html>
-
-
 
 <script>
     let replacedCount = '{{counts}}'.replace(/&#x27;/g, "'");
@@ -178,4 +180,84 @@
             }
         }
     });
+
+    function enableEditing(rowId) {
+        var row = document.getElementById(rowId);
+        row.classList.add('edit-mode');
+        var cells = row.getElementsByClassName('editable');
+        for (var i = 0; i < cells.length; i++) {
+            cells[i].contentEditable = true;
+        }
+    }
+
+    function saveRow(rowId) {
+        var row = document.getElementById(rowId);
+        row.classList.remove('edit-mode');
+        var cells = row.getElementsByClassName('editable');
+        var data = {};
+
+        for (var i = 0; i < cells.length; i++) {
+            cells[i].contentEditable = false;
+
+            let dataField = cells[i].getAttribute('data-field');
+
+            if (dataField == 'tradeDate') {
+                let formattedDate = formatDate(cells[i].innerText, 'date');
+                console.log(formatDate(cells[i].innerText, 'date'))
+                data[cells[i].dataset.field] = formatDate(cells[i].innerText, 'date');
+            } else {
+                data[cells[i].dataset.field] = cells[i].innerText;
+            }
+        }
+        const url = `/update-trade/${rowId}/`;
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('Row updated successfully!');
+                } else {
+                    alert('Failed to update row.');
+                }
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+                alert('Failed to update row due to network error.');
+            });
+    }
+
+    function formatDate(dateString, returnType) {
+        const date = new Date(dateString);
+
+        if (isNaN(date.getTime())) {
+            return "Invalid Date";
+        }
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hour = String(date.getHours()).padStart(2, '0');
+        const minute = String(date.getMinutes()).padStart(2, '0');
+        const second = String(date.getSeconds()).padStart(2, '0');
+
+        if (returnType === 'datetime') {
+            return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+        } else {
+            return `${year}-${month}-${day}`;
+        }
+    }
+
+
 </script>

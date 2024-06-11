@@ -4,21 +4,32 @@ from .models import Trade
 class TradeForm(ModelForm):
     class Meta:
         model = Trade
-        fields = [
-            'instrumentType','tradeDate', 'securityID', 'comment' , 'strategy', 'strategyID' , 'price' , 'spread',
-            'notional', 'direction', 'username'
+        fields = [            
+            'instrumentType',
+            'securityID',
+            'username',
+            'comment',
+            'strategy', 
+            'strategyID', 
+            'price',
+            'spread',
+            'notional',
+            'direction', 
+            'numberContracts',
+            'tradeDate'    
             ]
         
         labels = {
-            'instrumentType': 'Instrument Type',
-            'tradeDate': 'Trade Date',  
-            'securityID': 'Security ID',
-            'comment': 'Comment',
-            'strategy': 'Strategy',
-            'strategyID': 'Strategy ID',
-            'price': 'Price',
-            'spread': 'Spread',
-            'notional': 'Notional',
-            'direction': 'Direction',
-            'username': 'Username'
+            'instrumentType' : 'Instrument Type',
+            'securityID' : 'Security ID',
+            'username' : 'Username',
+            'comment' : 'Comment',
+            'strategy' : 'Strategy', 
+            'strategyID' : 'StrategyID', 
+            'price' : 'Price',
+            'spread' : 'Spread',
+            'notional' : 'Notional',
+            'direction' : 'Direction', 
+            'numberContracts' : 'NumberContracts',
+            'tradeDate' : 'Trade Date'    
             }       

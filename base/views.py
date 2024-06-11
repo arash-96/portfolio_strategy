@@ -1,22 +1,14 @@
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from .models import Trade
 from .forms import TradeForm
-from collections import Counter
 import json
 
 # Create your views here.
 def home(request):
     if request.method == 'GET':
         form = TradeForm()
-        trades = Trade.objects.all()
-        # instrument_types = [trade.instrumentType for trade in trades]
-        # instrument_type_counts = Counter(instrument_types)
-
-        # instrument_types = ['Bonds', 'CDS', 'Futures', 'FX']
-        # instrument_counts = [0, 0, 0, 0]
-        
-        #counts = list(instrument_type_counts.values())
+        trades = Trade.objects.all()       
 
         instrument_counts = {
             'Bonds' : 0,
@@ -26,8 +18,6 @@ def home(request):
         }
         for trade in trades:
             instrument_counts[trade.instrumentType] += 1
-       
-        print(instrument_counts)
 
         context = {
             'form': form,
@@ -36,7 +26,7 @@ def home(request):
         }
         return render(request, 'home.html', context)
     elif request.method == 'POST':
-        form = TradeForm(request.POST)
+        form = TradeForm(request.POST)             
         if form.is_valid():        
             form.save()        
             return HttpResponseRedirect('')
@@ -44,3 +34,23 @@ def home(request):
             return HttpResponseRedirect('/error/')
     else:        
         return HttpResponseRedirect('/error/')
+    
+
+def new_trade(request, pk):
+    trade = get_object_or_404(Trade, tradeID=pk)
+
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        
+        for field_name, field_value in data.items():
+            print(field_name, field_value)
+            if hasattr(trade, field_name):
+                setattr(trade, field_name, field_value)
+            else:
+                print(f'Field "{field_name}" does not exist for Trade ID {pk}')
+                return JsonResponse({'success': False, 'error': 'Invalid field(s) provided'})
+        
+        trade.save()
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})
