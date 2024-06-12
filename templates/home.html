@@ -82,57 +82,57 @@
     <div class="container">
         <sidebar>
             <div class="trade-form">
-                <h2>New Trade</h5>
-                    <form method="post">
-                        {% csrf_token %}
-                        <div>
-                            <label for="{{ form.instrumentType.id_for_label }}">{{ form.instrumentType.label }}</label>
-                            {{ form.instrumentType|attr:"onchange:blockFields(this);" }}
-                        </div>
-                        <div>
-                            <label for="{{ form.securityID.id_for_label }}">{{ form.securityID.label }}</label>
-                            {{ form.securityID }}
-                        </div>
-                        <div>
-                            <label for="{{ form.comment.id_for_label }}">{{ form.comment.label }}</label>
-                            {{ form.comment }}
-                        </div>
-                        <div>
-                            <label for="{{ form.strategy.id_for_label }}">{{ form.strategy.label }}</label>
-                            {{ form.strategy }}
-                        </div>
-                        <div>
-                            <label for="{{ form.strategyID.id_for_label }}">{{ form.strategyID.label }}</label>
-                            {{ form.strategyID }}
-                        </div>
-                        <div>
-                            <label for="{{ form.price.id_for_label }}">{{ form.price.label }}</label>
-                            {{ form.price }}
-                        </div>
-                        <div>
-                            <label for="{{ form.spread.id_for_label }}">{{ form.spread.label }}</label>
-                            {{ form.spread }}
-                        </div>
-                        <div>
-                            <label for="{{ form.notional.id_for_label }}">{{ form.notional.label }}</label>
-                            {{ form.notional }}
-                        </div>
-                        <div>
-                            <label for="{{ form.direction.id_for_label }}">{{ form.direction.label }}</label>
-                            {{ form.direction }}
-                        </div>
-                        <div>
-                            <label for="{{ form.numberContracts.id_for_label }}">
-                                {{ form.numberContracts.label }}</label>
-                            {{ form.numberContracts }}
-                        </div>
-                        <div>
-                            <label for="{{ form.tradeDate.id_for_label }}">{{ form.tradeDate.label }}</label>
-                            <input type="date" name="{{ form.tradeDate.name }}" id="{{ form.tradeDate.id_for_label }}"
-                                value="{{ form.tradeDate.value|default_if_none:'' }}">
-                        </div>
-                        <button type="submit">Submit</button>
-                    </form>
+                <h2>New Trade</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    <div>
+                        <label for="{{ form.instrumentType.id_for_label }}">{{ form.instrumentType.label }}</label>
+                        {{ form.instrumentType|attr:"onchange:blockFields(this);" }}
+                    </div>
+                    <div>
+                        <label for="{{ form.securityID.id_for_label }}">{{ form.securityID.label }}</label>
+                        {{ form.securityID }}
+                    </div>
+                    <div>
+                        <label for="{{ form.comment.id_for_label }}">{{ form.comment.label }}</label>
+                        {{ form.comment }}
+                    </div>
+                    <div>
+                        <label for="{{ form.strategy.id_for_label }}">{{ form.strategy.label }}</label>
+                        {{ form.strategy }}
+                    </div>
+                    <div>
+                        <label for="{{ form.strategyID.id_for_label }}">{{ form.strategyID.label }}</label>
+                        {{ form.strategyID }}
+                    </div>
+                    <div>
+                        <label for="{{ form.price.id_for_label }}">{{ form.price.label }}</label>
+                        {{ form.price }}
+                    </div>
+                    <div>
+                        <label for="{{ form.spread.id_for_label }}">{{ form.spread.label }}</label>
+                        {{ form.spread }}
+                    </div>
+                    <div>
+                        <label for="{{ form.notional.id_for_label }}">{{ form.notional.label }}</label>
+                        {{ form.notional }}
+                    </div>
+                    <div>
+                        <label for="{{ form.direction.id_for_label }}">{{ form.direction.label }}</label>
+                        {{ form.direction }}
+                    </div>
+                    <div>
+                        <label for="{{ form.numberContracts.id_for_label }}">
+                            {{ form.numberContracts.label }}</label>
+                        {{ form.numberContracts }}
+                    </div>
+                    <div>
+                        <label for="{{ form.tradeDate.id_for_label }}">{{ form.tradeDate.label }}</label>
+                        <input type="date" name="{{ form.tradeDate.name }}" id="{{ form.tradeDate.id_for_label }}"
+                            value="{{ form.tradeDate.value|default_if_none:'' }}">
+                    </div>
+                    <button type="submit">Submit</button>
+                </form>
             </div>
         </sidebar>
         <content>
@@ -250,7 +250,6 @@
 
             if (dataField == 'tradeDate') {
                 let formattedDate = formatDate(cells[i].innerText, 'date');
-                console.log(formatDate(cells[i].innerText, 'date'))
                 data[cells[i].dataset.field] = formatDate(cells[i].innerText, 'date');
             } else {
                 data[cells[i].dataset.field] = cells[i].innerText;

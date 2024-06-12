@@ -46,9 +46,12 @@ def new_trade(request, pk):
         for field_name, field_value in data.items():
             print(field_name, field_value)
             if hasattr(trade, field_name):
-                setattr(trade, field_name, field_value)
+                if field_value != 'None':  
+                    setattr(trade, field_name, field_value)
+                else:                
+                    print(f'Field "{field_name}" value is None for Trade ID {pk}. Skipping update.')
             else:
-                print(f'Field "{field_name}" does not exist for Trade ID {pk}')
+                #print(f'Field "{field_name}" does not exist for Trade ID {pk}')
                 return JsonResponse({'success': False, 'error': 'Invalid field(s) provided'})
         
         trade.save()
