@@ -1,3 +1,5 @@
+{% load widget_tweaks %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,6 +7,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <title>Trade Viewer</title>
     <style>
         body {
@@ -75,18 +79,60 @@
 </head>
 
 <body>
-
     <div class="container">
-
-
         <sidebar>
             <div class="trade-form">
-                <h2>New Trade</h2>
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form.as_p}}
-                    <button type="submit">Add Trade</button>
-                </form>
+                <h2>New Trade</h5>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div>
+                            <label for="{{ form.instrumentType.id_for_label }}">{{ form.instrumentType.label }}</label>
+                            {{ form.instrumentType|attr:"onchange:blockFields(this);" }}
+                        </div>
+                        <div>
+                            <label for="{{ form.securityID.id_for_label }}">{{ form.securityID.label }}</label>
+                            {{ form.securityID }}
+                        </div>
+                        <div>
+                            <label for="{{ form.comment.id_for_label }}">{{ form.comment.label }}</label>
+                            {{ form.comment }}
+                        </div>
+                        <div>
+                            <label for="{{ form.strategy.id_for_label }}">{{ form.strategy.label }}</label>
+                            {{ form.strategy }}
+                        </div>
+                        <div>
+                            <label for="{{ form.strategyID.id_for_label }}">{{ form.strategyID.label }}</label>
+                            {{ form.strategyID }}
+                        </div>
+                        <div>
+                            <label for="{{ form.price.id_for_label }}">{{ form.price.label }}</label>
+                            {{ form.price }}
+                        </div>
+                        <div>
+                            <label for="{{ form.spread.id_for_label }}">{{ form.spread.label }}</label>
+                            {{ form.spread }}
+                        </div>
+                        <div>
+                            <label for="{{ form.notional.id_for_label }}">{{ form.notional.label }}</label>
+                            {{ form.notional }}
+                        </div>
+                        <div>
+                            <label for="{{ form.direction.id_for_label }}">{{ form.direction.label }}</label>
+                            {{ form.direction }}
+                        </div>
+                        <div>
+                            <label for="{{ form.numberContracts.id_for_label }}">
+                                {{ form.numberContracts.label }}</label>
+                            {{ form.numberContracts }}
+                        </div>
+                        <div>
+                            <label for="{{ form.tradeDate.id_for_label }}">{{ form.tradeDate.label }}</label>
+                            <input type="date" name="{{ form.tradeDate.name }}" id="{{ form.tradeDate.id_for_label }}"
+                                value="{{ form.tradeDate.value|default_if_none:'' }}">
+                        </div>
+                        <button type="submit">Submit</button>
+                    </form>
             </div>
         </sidebar>
         <content>
@@ -102,7 +148,7 @@
                         <th>Security ID</th>
                         <th>Instrument type</th>
                         <th>Trade date</th>
-                        <th>Notional amount</th>
+                        <th>Notional</th>
                         <th>Number of contracts</th>
                         <th>Price</th>
                         <th>Username</th>
@@ -123,8 +169,9 @@
                         <td class="editable" data-field="notional">{{ trade.notional }}</td>
                         <td class="editable" data-field="numberContracts">{{ trade.numberContracts }}</td>
                         <td class="editable" data-field="price">{{ trade.price}}</td>
-                        <td class="editable" data-field="username">{{ trade.username}}</td>
+                        <td>{{ trade.username}}</td>
                         <td class="editable" data-field="comment">{{ trade.comment }}</td>
+                        <td>{{ trade.timeStamp }}</td>
                         <td class="editable" data-field="strategy">{{ trade.strategy}}</td>
                         <td class="editable" data-field="strategyID">{{ trade.strategyID}}</td>
                         <td class="editable" data-field="spread">{{ trade.spread}}</td>
@@ -259,5 +306,30 @@
         }
     }
 
+    function blockFields(element) {
+        let dropdownValue = element.value;
+        $("#id_numberContracts, #id_price, #id_spread").prop("disabled", false);
+
+        switch (dropdownValue) {
+            case 'Bonds':
+                $("#id_numberContracts").prop("disabled", true);
+                break;
+            case 'CDS':
+                $("#id_numberContracts, #id_price").prop("disabled", true);
+                break;
+            case 'Futures':
+                $("#id_spread").prop("disabled", true);
+                break;
+            case 'FTX':
+                $("#id_spread, #id_numberContracts").prop("disabled", true);
+                break;
+            default:
+                break;
+        }
+    }
+
+    window.onload = function () {
+        blockFields($("#id_instrumentType")[0]);
+    };
 
 </script>

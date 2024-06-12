@@ -25,8 +25,9 @@ def home(request):
             'counts': instrument_counts,
         }
         return render(request, 'home.html', context)
-    elif request.method == 'POST':
-        form = TradeForm(request.POST)             
+    elif request.method == 'POST':        
+        form = TradeForm(request.POST)        
+        print(form.errors)     
         if form.is_valid():        
             form.save()        
             return HttpResponseRedirect('')
