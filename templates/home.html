@@ -1,4 +1,5 @@
 {% load widget_tweaks %}
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,72 +11,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js"
         integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <title>Trade Viewer</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-
-        .container {
-            display: grid;
-            grid-template-areas:
-                "header header"
-                "sidebar content"
-                "footer footer";
-            grid-template-columns: 1fr 3fr;
-            grid-template-rows: auto 1fr auto;
-            gap: 10px;
-            height: 100vh;
-        }
-
-        header,
-        footer {
-            grid-area: header;
-            background-color: #f1f1f1;
-            padding: 10px;
-            text-align: center;
-        }
-
-        sidebar {
-            grid-area: sidebar;
-            background-color: #f9f9f9;
-            padding: 10px;
-        }
-
-        content {
-            grid-area: content;
-            padding: 10px;
-        }
-
-        .trade-form {
-            display: grid;
-            gap: 10px;
-        }
-
-        .trade-form input,
-        .trade-form select,
-        .trade-form button,
-        .trade-form textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-        }
-
-        .trade-blotter {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .trade-blotter th,
-        .trade-blotter td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-
-        .trade-blotter th {
-            background-color: #f2f2f2;
-            text-align: left;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'styles/main.css' %}">
 </head>
 
 <body>
@@ -86,48 +22,53 @@
                 <form method="post">
                     {% csrf_token %}
                     <div>
-                        <label for="{{ form.instrumentType.id_for_label }}">{{ form.instrumentType.label }}</label>
-                        {{ form.instrumentType|attr:"onchange:blockFields(this);" }}
+                        <label for="{{ form.instrumentType.id_for_label }}" class="height70">
+                            {{ form.instrumentType.label }}</label>
+                        {{ form.instrumentType|attr:"style:height:70%;"|attr:"onchange:blockFields(this);" }}
                     </div>
                     <div>
-                        <label for="{{ form.securityID.id_for_label }}">{{ form.securityID.label }}</label>
-                        {{ form.securityID }}
+                        <label for="{{ form.securityID.id_for_label }}" class="height70">
+                            {{ form.securityID.label}}</label>
+                        {{ form.securityID|attr:"style:height:70%;" }}
                     </div>
                     <div>
-                        <label for="{{ form.comment.id_for_label }}">{{ form.comment.label }}</label>
-                        {{ form.comment }}
+                        <label for="{{ form.comment.id_for_label }}" class="height70">{{ form.comment.label }}</label>
+                        {{ form.comment|attr:"style:height:70%;" }}
                     </div>
                     <div>
-                        <label for="{{ form.strategy.id_for_label }}">{{ form.strategy.label }}</label>
-                        {{ form.strategy }}
+                        <label for="{{ form.strategy.id_for_label }}" class="height70">{{ form.strategy.label }}</label>
+                        {{ form.strategy|attr:"style:height:70%;" }}
                     </div>
                     <div>
-                        <label for="{{ form.strategyID.id_for_label }}">{{ form.strategyID.label }}</label>
-                        {{ form.strategyID }}
+                        <label for="{{ form.strategyID.id_for_label }}" class="height70">
+                            {{ form.strategyID.label }}</label>
+                        {{ form.strategyID|attr:"style:height:70%;" }}
                     </div>
                     <div>
-                        <label for="{{ form.price.id_for_label }}">{{ form.price.label }}</label>
-                        {{ form.price }}
+                        <label for="{{ form.price.id_for_label }}" class="height70">{{ form.price.label }}</label>
+                        {{ form.price|attr:"style:height:70%;" }}
                     </div>
                     <div>
-                        <label for="{{ form.spread.id_for_label }}">{{ form.spread.label }}</label>
-                        {{ form.spread }}
+                        <label for="{{ form.spread.id_for_label }}" class="height70">{{ form.spread.label }}</label>
+                        {{ form.spread|attr:"style:height:70%;" }}
                     </div>
                     <div>
-                        <label for="{{ form.notional.id_for_label }}">{{ form.notional.label }}</label>
-                        {{ form.notional }}
+                        <label for="{{ form.notional.id_for_label }}" class="height70">{{ form.notional.label }}</label>
+                        {{ form.notional|attr:"style:height:70%;" }}
                     </div>
                     <div>
-                        <label for="{{ form.direction.id_for_label }}">{{ form.direction.label }}</label>
-                        {{ form.direction }}
+                        <label for="{{ form.direction.id_for_label }}" class="height70">
+                            {{ form.direction.label }}</label>
+                        {{ form.direction|attr:"style:height:70%;" }}
                     </div>
                     <div>
-                        <label for="{{ form.numberContracts.id_for_label }}">
+                        <label for="{{ form.numberContracts.id_for_label }}" class="height70">
                             {{ form.numberContracts.label }}</label>
-                        {{ form.numberContracts }}
+                        {{ form.numberContracts|attr:"style:height:70%;" }}
                     </div>
                     <div>
-                        <label for="{{ form.tradeDate.id_for_label }}">{{ form.tradeDate.label }}</label>
+                        <label for="{{ form.tradeDate.id_for_label }}" class="height70">
+                            {{ form.tradeDate.label}}</label>
                         <input type="date" name="{{ form.tradeDate.name }}" id="{{ form.tradeDate.id_for_label }}"
                             value="{{ form.tradeDate.value|default_if_none:'' }}">
                     </div>
@@ -135,14 +76,9 @@
                 </form>
             </div>
         </sidebar>
-        <content>
-            <h2>Trades by Instrument type</h2>
-            <div id="chart">
-                <!-- <img src="https://via.placeholder.com/1000x200" alt="Chart"> -->
-                <canvas id="myChart" style="width: 200px; height: 50px;"></canvas>
-            </div>
+        <div class="content">
             <h2>Trade Blotter</h2>
-            <table class="trade-blotter" style="width: 50%;">
+            <table class="trade-blotter" style="width: 50%;height: 50%;">
                 <thead>
                     <tr>
                         <th>Security ID</th>
@@ -185,8 +121,11 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <!-- <button>Upload trades</button> -->
-        </content>
+            <h2>Trades by Instrument type</h2>
+            <div id="chart">
+                <canvas id="myChart" style="width: 200px; height: 50px;"></canvas>
+            </div>
+        </div>
     </div>
 </body>
 

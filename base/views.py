@@ -37,7 +37,7 @@ def home(request):
         return HttpResponseRedirect('/error/')
     
 
-def new_trade(request, pk):
+def update_trade(request, pk):
     trade = get_object_or_404(Trade, tradeID=pk)
 
     if request.method == 'POST':
